@@ -1,15 +1,17 @@
-package Store;
+package Store.Controller;
 
 import static spark.Spark.*;
+
+import Store.Model.User;
+import Store.Service.UserS;
 import com.google.gson.Gson;
 
 import java.util.Map;
 
 public class UserController {
 
-    public static void main(String[] args) {
-        port(8080);
-        Gson gson = new Gson();
+    public static void registerRoutes(Gson gson) {
+
 
         //GET /users - Retrieve all users
         get("/users", (req, res) -> {

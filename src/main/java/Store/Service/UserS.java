@@ -1,4 +1,6 @@
-package Store;
+package Store.Service;
+
+import Store.Model.User;
 
 import java.util.*;
 
