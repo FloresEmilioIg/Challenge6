@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Available Products</title>
+    <link rel="stylesheet" href="/css/list.css">
+    <script src="/js/list.js" defer></script>
+</head>
+<body>
+<h1>Products for Sale</h1>
+
+<table id="item-list-table">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+    </tr>
+    {{#products}}
+        <tr>
+            <td>
+                <a href="/products/{{id}}" class="item-name-link">{{productName}}</a>
+            </td>
+            <td>${{productPrice}}</td>
+        </tr>
+    {{/products}}
+</table>
+</body>
+</html>
