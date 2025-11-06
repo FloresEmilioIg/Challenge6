@@ -6,12 +6,17 @@ import Store.Model.Offer;
 import Store.Model.Product;
 import Store.Service.OfferS;
 import Store.Service.ProductS;
+import Store.WebSockets;
 import com.google.gson.Gson;
+
 import spark.ModelAndView;
 import spark.template.mustache.MustacheTemplateEngine;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProductController {
 
@@ -24,8 +29,56 @@ public class ProductController {
         // ✅ IMPORTANT: define these BEFORE /products/:id
         // GET /products/view — show all products
         get("/products/view", (req, res) -> {
+            String search = req.queryParams("search");
+            String minParam = req.queryParams("minPrice");
+            String maxParam = req.queryParams("maxPrice");
+            String sortBy = req.queryParams("sortBy");
+
+            double minPrice = (minParam != null && !minParam.isEmpty()) ? Double.parseDouble(minParam) : 0;
+            double maxPrice = (maxParam != null && !maxParam.isEmpty()) ? Double.parseDouble(maxParam) : Double.MAX_VALUE;
+
+            // Step 1: Get filtered products
+            List<Product> filtered = ProductS.getProductsByPriceRange(minPrice, maxPrice);
+
+            // Step 2: Apply name filtering if 'search' was provided
+            if (search != null && !search.isEmpty()) {
+                String lowerSearch = search.toLowerCase();
+                filtered = filtered.stream()
+                        .filter(p -> p.getProductName().toLowerCase().contains(lowerSearch))
+                        .collect(Collectors.toList());
+            }
+
+            // Step 3: Sort results based on sortBy
+            if (sortBy != null) {
+                switch (sortBy) {
+                    case "priceAsc":
+                        filtered.sort(Comparator.comparingDouble(Product::getProductPrice));
+                        break;
+                    case "priceDesc":
+                        filtered.sort(Comparator.comparingDouble(Product::getProductPrice).reversed());
+                        break;
+                    case "nameAsc":
+                        filtered.sort(Comparator.comparing(Product::getProductName, String.CASE_INSENSITIVE_ORDER));
+                        break;
+                    case "nameDesc":
+                        filtered.sort(Comparator.comparing(Product::getProductName, String.CASE_INSENSITIVE_ORDER).reversed());
+                        break;
+                }
+            }
+
+            // Step 4: Prepare model for Mustache
             Map<String, Object> model = new HashMap<>();
-            model.put("products", ProductS.getAllProducts());
+            model.put("products", filtered);
+            model.put("search", search);
+            model.put("minPrice", minParam);
+            model.put("maxPrice", maxParam);
+
+            // For keeping the selected sorting option checked
+            model.put("isPriceAsc", "priceAsc".equals(sortBy));
+            model.put("isPriceDesc", "priceDesc".equals(sortBy));
+            model.put("isNameAsc", "nameAsc".equals(sortBy));
+            model.put("isNameDesc", "nameDesc".equals(sortBy));
+
             return new ModelAndView(model, "products.mustache");
         }, new MustacheTemplateEngine());
 
@@ -65,14 +118,43 @@ public class ProductController {
             return new ModelAndView(model, "form.mustache");  // ✅ Normal case
         }, new MustacheTemplateEngine());
 
+
+
         /* ==========================
          *  JSON API ENDPOINTS
          * ========================== */
 
         // GET /products — list all products
-        get("/products", (req, res) -> {
+
+        get("/api/products", (req, res) -> {
             res.type("application/json");
-            return gson.toJson(ProductS.getAllProducts());
+            String search = req.queryParams("search");
+            String minParam = req.queryParams("minPrice");
+            String maxParam = req.queryParams("maxPrice");
+            String sortBy = req.queryParams("sortBy");
+
+            double minPrice = (minParam != null && !minParam.isEmpty()) ? Double.parseDouble(minParam) : 0;
+            double maxPrice = (maxParam != null && !maxParam.isEmpty()) ? Double.parseDouble(maxParam) : Double.MAX_VALUE;
+
+            List<Product> filtered = ProductS.getProductsByPriceRange(minPrice, maxPrice);
+
+            if (search != null && !search.isEmpty()) {
+                filtered = filtered.stream()
+                        .filter(p -> p.getProductName().toLowerCase().contains(search.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
+
+            // Sort
+            if (sortBy != null) {
+                switch (sortBy) {
+                    case "priceAsc": filtered.sort(Comparator.comparingDouble(Product::getProductPrice)); break;
+                    case "priceDesc": filtered.sort(Comparator.comparingDouble(Product::getProductPrice).reversed()); break;
+                    case "nameAsc": filtered.sort(Comparator.comparing(Product::getProductName, String.CASE_INSENSITIVE_ORDER)); break;
+                    case "nameDesc": filtered.sort(Comparator.comparing(Product::getProductName, String.CASE_INSENSITIVE_ORDER).reversed()); break;
+                }
+            }
+
+            return new Gson().toJson(filtered);
         });
 
         // GET /products/:id — get product by id
@@ -86,6 +168,8 @@ public class ProductController {
             res.type("application/json");
             return gson.toJson(product);
         });
+
+
 
         // POST /products/:id — add product
         post("/products/:id", (req, res) -> {
@@ -145,6 +229,15 @@ public class ProductController {
             offer.setAmount(Double.parseDouble(req.queryParams("amount")));
             offer.setId(req.queryParams("id"));
             OfferS.addOffer(offer);
+
+            // Broadcast real-time update to all clients
+            String message = new Gson().toJson(Map.of(
+                    "type", "updatePrice",
+                    "itemId", offer.getId(),
+                    "price", offer.getAmount()
+            ));
+            WebSockets.broadcast(message);
+
             res.status(201);
             return "Offer submitted successfully!";
         });

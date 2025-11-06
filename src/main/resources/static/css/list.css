@@ -38,3 +38,25 @@ a.back-link {
     display: block;
     margin-top: 16px;
 }
+
+#filter-section {
+    margin-bottom: 20px;
+}
+
+#filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#filter-form label {
+    font-weight: bold;
+}
+
+#filter-form input, #filter-form select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}

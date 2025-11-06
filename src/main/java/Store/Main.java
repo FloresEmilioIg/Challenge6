@@ -6,11 +6,19 @@ import Store.Controller.OrderController;
 import Store.Controller.UserController;
 import Store.Controller.ProductController;
 import Store.Errors.GlobalExceptionHandler;
+import Store.Model.Product;
+import Store.Service.ProductS;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import spark.template.mustache.MustacheTemplateEngine;
 import spark.ModelAndView;
+
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,8 +28,21 @@ public class Main {
         // ✅ Serve static files (from /resources/public)
         staticFiles.location("/static");
 
+        webSocket("/ws", WebSockets.class);
+
         Gson gson = new Gson();
 
+        try (Reader reader = new InputStreamReader(
+                Main.class.getResourceAsStream("/data.json"))) {
+
+            Type productListType = new TypeToken<List<Product>>() {}.getType();
+            List<Product> products = gson.fromJson(reader, productListType);
+            ProductS.setInitialProducts(products);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("⚠️ Could not load initial products JSON.");
+        }
 
         // Register all controller routes
         GlobalExceptionHandler.register();

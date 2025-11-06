@@ -19,7 +19,7 @@
         <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
-            <version>2.5.4</version>
+            <version>2.9.4</version>
         </dependency>
 
         <dependency>
@@ -34,11 +34,13 @@
             <artifactId>slf4j-api</artifactId>
             <version>2.0.17</version>
         </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.5.18</version>
         </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
@@ -49,6 +51,24 @@
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-template-mustache</artifactId>
             <version>2.7.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-server</artifactId>
+            <version>9.4.54.v20240208</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-servlet</artifactId>
+            <version>9.4.54.v20240208</version>
         </dependency>
 
     </dependencies>

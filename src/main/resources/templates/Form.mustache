@@ -5,6 +5,19 @@
     <link rel="stylesheet" href="/css/form.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/form.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Connect to WebSocket
+            var socket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/ws");
+
+            socket.onmessage = function(event) {
+                var message = JSON.parse(event.data);
+                if (message.type === "updatePrice" && message.itemId === {{product.id}}) {
+                    $("#product-price").text("$" + message.price.toFixed(2));
+                }
+            };
+        });
+    </script>
 </head>
 <body>
 <div class="container">

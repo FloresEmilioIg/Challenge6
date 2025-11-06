@@ -7,7 +7,13 @@ public class Order {
     private int quantity;
     private double totalPrice;
 
-    public Order() {}
+    public Order(int orderId, User user, Product product, int quantity, double totalPrice) {
+        this.orderId = orderId;
+        this.user = user;
+        this.product = product;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+    }
 
     public Order(int orderId, User user, Product product, int quantity) {
         this.orderId = orderId;

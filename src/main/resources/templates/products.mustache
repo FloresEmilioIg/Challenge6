@@ -10,6 +10,30 @@
 <body>
 <h1>Products for Sale</h1>
 
+<div id="filter-section">
+    <form id="filter-form" method="get" action="/products/view">
+        <label for="search">Search:</label>
+        <input type="text" id="search" name="search" placeholder="Product name" value="{{search}}">
+
+        <label for="minPrice">Min Price:</label>
+        <input type="number" id="minPrice" name="minPrice" step="0.01" value="{{minPrice}}">
+
+        <label for="maxPrice">Max Price:</label>
+        <input type="number" id="maxPrice" name="maxPrice" step="0.01" value="{{maxPrice}}">
+
+        <label for="sortBy">Sort by:</label>
+        <select id="sortBy" name="sortBy">
+            <option value="">--Select--</option>
+            <option value="priceAsc" {{#isPriceAsc}}selected{{/isPriceAsc}}>Price (Low to High)</option>
+            <option value="priceDesc" {{#isPriceDesc}}selected{{/isPriceDesc}}>Price (High to Low)</option>
+            <option value="nameAsc" {{#isNameAsc}}selected{{/isNameAsc}}>Name (A–Z)</option>
+            <option value="nameDesc" {{#isNameDesc}}selected{{/isNameDesc}}>Name (Z–A)</option>
+        </select>
+
+        <button type="submit">Apply</button>
+    </form>
+</div>
+
 <table id="item-list-table">
     <tr>
         <th>Name</th>
@@ -18,7 +42,7 @@
     {{#products}}
         <tr>
             <td>
-                <a href="/products/{{id}}" class="item-name-link">{{productName}}</a>
+                <a href="/products/view/{{id}}" class="item-name-link">{{productName}}</a>
             </td>
             <td>${{productPrice}}</td>
         </tr>

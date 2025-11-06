@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "productName": "Gorra autografiada por Peso Pluma",
+    "description": "Una gorra autografiada por el famoso Peso Pluma.",
+    "productPrice": 621.34
+  },
+  {
+    "id": 2,
+    "productName": "Casco autografiado por Rosalía",
+    "description": "Un casco autografiado por la famosa cantante Rosalía, una verdadera MOTOMAMI!",
+    "productPrice": 734.57
+  },
+  {
+    "id": 3,
+    "productName": "Chamarra de Bad Bunny",
+    "description": "Una chamarra de la marca favorita de Bad Bunny, autografiada por el propio artista.",
+    "productPrice": 521.89
+  },
+  {
+    "id": 4,
+    "productName": "Guitarra de Fernando Delgadillo",
+    "description": "Una guitarra acústica de alta calidad utilizada por el famoso cantautor Fernando Delgadillo.",
+    "productPrice": 823.12
+  },
+  {
+    "id": 5,
+    "productName": "Jersey firmado por Snoop Dogg",
+    "description": "Un jersey autografiado por el legendario rapero Snoop Dogg.",
+    "productPrice": 355.67
+  },
+  {
+    "id": 6,
+    "productName": "Prenda de Cardi B autografiada",
+    "description": "Un crop-top usado y autografiado por la famosa rapera Cardi B. en su última visita a México",
+    "productPrice": 674.23
+  },
+  {
+    "id": 7,
+    "productName": "Guitarra autografiada por Coldplay",
+    "description": "Una guitarra eléctrica autografiada por la popular banda británica Coldplay, un día antes de su concierto en Monterrey en 2022.",
+    "productPrice": 458.91
+  }
+]
