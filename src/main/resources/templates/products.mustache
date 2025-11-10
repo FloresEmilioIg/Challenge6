@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Available Products</title>
     <link rel="stylesheet" href="/css/list.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="/js/list.js" defer></script>
 </head>
 <body>
@@ -40,7 +41,7 @@
         <th>Price</th>
     </tr>
     {{#products}}
-        <tr>
+        <tr data-id="{{id}}">
             <td>
                 <a href="/products/view/{{id}}" class="item-name-link">{{productName}}</a>
             </td>

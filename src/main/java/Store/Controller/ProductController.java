@@ -6,6 +6,7 @@ import Store.Model.Offer;
 import Store.Model.Product;
 import Store.Service.OfferS;
 import Store.Service.ProductS;
+import Store.UpdateMessage;
 import Store.WebSockets;
 import com.google.gson.Gson;
 
@@ -190,7 +191,12 @@ public class ProductController {
             int id = Integer.parseInt(req.params(":id"));
             Product product = gson.fromJson(req.body(), Product.class);
             product.setId(id);
+
             if (ProductS.updateProduct(id, product)) {
+                // ✅ Broadcast the update to all WebSocket clients
+                String message = gson.toJson(new UpdateMessage("updatePrice", id, product.getProductName(), product.getProductPrice()));
+                WebSockets.broadcast(message);
+
                 res.status(200);
                 return "Product updated";
             } else {
@@ -233,7 +239,7 @@ public class ProductController {
             // Broadcast real-time update to all clients
             String message = new Gson().toJson(Map.of(
                     "type", "updatePrice",
-                    "itemId", offer.getId(),
+                    "itemId", String.valueOf(offer.getId()),
                     "price", offer.getAmount()
             ));
             WebSockets.broadcast(message);
